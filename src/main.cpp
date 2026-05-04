@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <ESP32Servo.h>
 
+#include "pin_definitions.h"
+
 // put function declarations here:
 int myFunction(int, int);
 
