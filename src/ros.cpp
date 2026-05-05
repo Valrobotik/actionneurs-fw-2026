@@ -20,7 +20,7 @@ void init_ros() {
   state = states::WAITING_AGENT;
 }
 
-void DropCallback(const void* msgin) {
+void ZdcHandshakeCallback(const void* msgin) {
   const std_msgs__msg__Bool* msg = (const std_msgs__msg__Bool*)msgin;
   Serial.print("pince en bas...");
 }
@@ -43,7 +43,7 @@ bool create_entities() {
     "/drop"));
 
   RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_drop, &received_msg_drop,
-      &DropCallback, ON_NEW_DATA));
+      &ZdcHandshakeCallback, ON_NEW_DATA));
 
   return true;
 }
