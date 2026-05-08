@@ -27,7 +27,7 @@ void init_ros() {
 
 void ZdcHandshakeCallback(const void* msgin) {
   const std_msgs__msg__Bool* msg = (const std_msgs__msg__Bool*)msgin;
-  Serial.print("pince en bas...");
+  Serial.println("pince en bas...");
 }
 
 void GrabCallback(const void* msgin) {
