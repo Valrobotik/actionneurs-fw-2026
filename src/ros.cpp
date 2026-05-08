@@ -34,6 +34,8 @@ void GrabCallback(const void* msgin) {
   const std_msgs__msg__Bool* msg = (const std_msgs__msg__Bool*)msgin;
   if (msg->data) {
     update_grabber(GRABBER_POS_CLOSED);
+    update_arm(ARM_POS_0);
+    update_grabber(GRABBER_POS_OPEN);
   } else {
     update_grabber(GRABBER_POS_OPEN);
   }
