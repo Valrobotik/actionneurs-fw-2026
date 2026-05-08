@@ -8,6 +8,7 @@
 #include <rosidl_runtime_c/string_functions.h>
 
 #include "pin_definitions.h"
+#include "servo.h"
 
 // ROS
 #define RCCHECK(fn) { rcl_ret_t temp_rc = fn; if((temp_rc != RCL_RET_OK)){Serial.println("Erreur ROS"); return false;}}
