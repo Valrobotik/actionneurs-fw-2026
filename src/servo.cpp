@@ -55,8 +55,8 @@ void init_pos() {
     SERVO_ARM.write(ARM_POS_0);
     SERVO_GRABBER.write(GRABBER_POS_OPEN);
 
-    SERVO_SLIDER_1.write(SLIDER_POS_0);
-    SERVO_SLIDER_2.write(SLIDER_POS_0);
+    SERVO_SLIDER_1.write(SLIDER_POS_0_1);
+    SERVO_SLIDER_2.write(SLIDER_POS_0_2);
 }
 
 void disable_servos() {
@@ -163,11 +163,11 @@ void update_grabber(int pose) {
 void update_slider(bool is_deployed) {
     MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, SERVO_SLIDER_1.read());
     MotionGenerator *trapezoidalProfile_2 = new MotionGenerator(50, 50, SERVO_SLIDER_2.read());
-    int pose_1 = is_deployed ? SLIDER_POS_DEPLOYED_1 : SLIDER_POS_0;
-    int pose_2 = is_deployed ? SLIDER_POS_DEPLOYED_2 : SLIDER_POS_0;
-    while (!trapezoidalProfile->getFinished() || !trapezoidalProfile_2->getFinished()) {
+    int pose_1 = is_deployed ? SLIDER_POS_DEPLOYED_1 : SLIDER_POS_0_1;
+    int pose_2 = is_deployed ? SLIDER_POS_DEPLOYED_2 : SLIDER_POS_0_2;
+    while (!(trapezoidalProfile->getFinished() && trapezoidalProfile_2->getFinished())) {
         float position = trapezoidalProfile->update(pose_1);
-        float position_2 = trapezoidalProfile->update(pose_2);
+        float position_2 = trapezoidalProfile_2->update(pose_2);
         SERVO_SLIDER_1.write(position);
         SERVO_SLIDER_2.write(position_2);
         delay(25);

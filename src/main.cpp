@@ -60,6 +60,7 @@ void setup() {
   update_slider(true);
   delay(2000);
   update_slider(false);
+  delay(2000);
   init_ros();
 }
 

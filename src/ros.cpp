@@ -7,12 +7,14 @@ std_msgs__msg__Bool msg;
 std_msgs__msg__Bool received_msg_drop;
 std_msgs__msg__Bool received_msg_grab;
 std_msgs__msg__Bool received_msg_open;
+std_msgs__msg__Bool received_msg_slider;
 rclc_support_t support;
 rcl_allocator_t allocator;
 rcl_node_t node;
 rcl_subscription_t subscriber_drop;
 rcl_subscription_t subscriber_grab;
 rcl_subscription_t subscriber_open;
+rcl_subscription_t subscriber_slider;
 rclc_executor_t executor;
 
 void init_ros() {
@@ -46,6 +48,11 @@ void OpenCallback(const void* msgin) {
   }
 }
 
+void SliderCallback(const void* msgin) {
+  const std_msgs__msg__Bool* msg = (const std_msgs__msg__Bool*)msgin;
+  update_slider(msg->data);
+}
+
 bool create_entities() {
   allocator = rcl_get_default_allocator();
   
@@ -61,7 +68,7 @@ bool create_entities() {
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
     "/temp"));
 
-  RCCHECK(rclc_executor_init(&executor, &support.context, 3, &allocator));
+  RCCHECK(rclc_executor_init(&executor, &support.context, 4, &allocator));
   RCCHECK(rclc_subscription_init_default(&subscriber_drop, &node,
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
     "/drop"));
@@ -71,6 +78,9 @@ bool create_entities() {
   RCCHECK(rclc_subscription_init_default(&subscriber_open, &node,
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
     "/open"));
+  RCCHECK(rclc_subscription_init_default(&subscriber_slider, &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
+    "/slider"));
 
   RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_drop, &received_msg_drop,
       &ZdcHandshakeCallback, ON_NEW_DATA));
@@ -78,6 +88,8 @@ bool create_entities() {
       &GrabCallback, ON_NEW_DATA));
   RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_open, &received_msg_open,
       &OpenCallback, ON_NEW_DATA));
+  RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_slider, &received_msg_slider,
+      &SliderCallback, ON_NEW_DATA));
 
   Serial.println("ROS initialized");
   
@@ -92,6 +104,8 @@ void destroy_entities() {
   (void) rclc_executor_fini(&executor);
   (void) rcl_subscription_fini(&subscriber_drop, &node);
   (void) rcl_subscription_fini(&subscriber_grab, &node);
+  (void) rcl_subscription_fini(&subscriber_open, &node);
+  (void) rcl_subscription_fini(&subscriber_slider, &node);
   (void) rcl_node_fini(&node);
   rclc_support_fini(&support);
 }
