@@ -15,6 +15,8 @@ Servo servo_12;
 Servo servo_13;
 Servo servo_14;
 
+servos_state_t servos_state = servos_state_t::OFF;
+
 #define SERVOCHECK(fn) { int temp_rc = fn; if((!temp_rc)){Serial.println("Erreur Servo");} \
     else {Serial.printf("Attached to channel: %d\n", temp_rc);}}
 
@@ -44,6 +46,7 @@ void init_servos() {
     // SERVOCHECK(servo_12.attach(SERVO_12_PIN));
     SERVOCHECK(servo_13.attach(SERVO_13_PIN));
     SERVOCHECK(servo_14.attach(SERVO_14_PIN));
+    servos_state = servos_state_t::HOLDING;
 }
 
 void init_pos() {
@@ -76,9 +79,6 @@ void disable_servos() {
     // SERVOCHECK(servo_14.attach(SERVO_14_PIN));
 }
 
-void raise() {
-}
-
 void update_tippers(int* states) {
   SERVO_TIP_1.write(states[0]);
   SERVO_TIP_2.write(states[1]);
@@ -87,24 +87,29 @@ void update_tippers(int* states) {
 }
 
 void update_arm(int pose) {
+    servos_state = servos_state_t::MOVING;
     MotionGenerator trapezoidalProfile(50, 50, SERVO_ARM.read());
     while (!trapezoidalProfile.getFinished()) {
         float position = trapezoidalProfile.update(pose);
         SERVO_ARM.write(position);
         delay(25);
     }
+    servos_state = servos_state_t::HOLDING;
 }
 
 void update_grabber(int pose) {
+    servos_state = servos_state_t::MOVING;
     MotionGenerator trapezoidalProfile(50, 50, SERVO_GRABBER.read());
     while (!trapezoidalProfile.getFinished()) {
         float position = trapezoidalProfile.update(pose);
         SERVO_GRABBER.write(position);
         delay(25);
     }
+    servos_state = servos_state_t::HOLDING;
 }
 
 void update_slider(bool is_deployed) {
+    servos_state = servos_state_t::MOVING;
     MotionGenerator trapezoidalProfile(50, 50, SERVO_SLIDER_1.read());
     MotionGenerator trapezoidalProfile_2(50, 50, SERVO_SLIDER_2.read());
     int pose_1 = is_deployed ? SLIDER_POS_DEPLOYED_1 : SLIDER_POS_0_1;
@@ -116,4 +121,5 @@ void update_slider(bool is_deployed) {
         SERVO_SLIDER_2.write(position_2);
         delay(25);
     }
+    servos_state = servos_state_t::HOLDING;
 }

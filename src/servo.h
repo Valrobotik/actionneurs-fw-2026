@@ -33,6 +33,12 @@
 #define SERVO_SLIDER_1 servo_13
 #define SERVO_SLIDER_2 servo_14
 
+typedef enum servos_state_t {
+    OFF,
+    MOVING,
+    HOLDING,
+} servos_state_t;
+
 void init_servos();
 void init_pos();
 void disable_servos();
