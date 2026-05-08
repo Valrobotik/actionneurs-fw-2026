@@ -56,6 +56,10 @@ void setup() {
   update_arm(ARM_POS_0);
   delay(2000);
   update_grabber(GRABBER_POS_CLOSED);
+  delay(2000);
+  update_slider(SLIDER_POS_DEPLOYED);
+  delay(2000);
+  update_slider(SLIDER_POS_0);
   init_ros();
 }
 

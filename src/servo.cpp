@@ -42,6 +42,8 @@ void init_servos() {
     // SERVOCHECK(servo_10.attach(SERVO_10_PIN));
     // SERVOCHECK(servo_11.attach(SERVO_11_PIN));
     // SERVOCHECK(servo_12.attach(SERVO_12_PIN));
+    SERVOCHECK(servo_13.attach(SERVO_13_PIN));
+    SERVOCHECK(servo_14.attach(SERVO_14_PIN));
 }
 
 void init_pos() {
@@ -52,6 +54,9 @@ void init_pos() {
 
     SERVO_ARM.write(ARM_POS_0);
     SERVO_GRABBER.write(GRABBER_POS_OPEN);
+
+    SERVO_SLIDER_1.write(SLIDER_POS_0);
+    SERVO_SLIDER_2.write(SLIDER_POS_0);
 }
 
 void disable_servos() {
@@ -151,6 +156,16 @@ void update_grabber(int pose) {
     while (!trapezoidalProfile->getFinished()) {
         float position = trapezoidalProfile->update(pose);
         SERVO_GRABBER.write(position);
+        delay(25);
+    }
+}
+
+void update_slider(int pose) {
+    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, SERVO_SLIDER_1.read());
+    while (!trapezoidalProfile->getFinished()) {
+        float position = trapezoidalProfile->update(pose);
+        SERVO_SLIDER_1.write(position);
+        SERVO_SLIDER_2.write(-position);
         delay(25);
     }
 }
