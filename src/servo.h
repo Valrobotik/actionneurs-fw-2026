@@ -36,7 +36,6 @@
 void init_servos();
 void init_pos();
 void disable_servos();
-void drop();
 void raise();
 
 void update_tippers(int* states);
