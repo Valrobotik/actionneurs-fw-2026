@@ -15,32 +15,36 @@ Servo servo_12;
 Servo servo_13;
 Servo servo_14;
 
+#define SERVOCHECK(fn) { int temp_rc = fn; if((!temp_rc)){Serial.println("Erreur Servo");} \
+    else {Serial.printf("Attached to channel: %d", temp_rc);}}
+
 void init_servos() {
-    servo_01.attach(SERVO_01_PIN);
-    servo_02.attach(SERVO_02_PIN);
-    servo_03.attach(SERVO_03_PIN);
-    servo_04.attach(SERVO_04_PIN);
-    servo_05.attach(SERVO_05_PIN);
-    servo_06.attach(SERVO_06_PIN);
-    servo_07.attach(SERVO_07_PIN);
-    servo_08.attach(SERVO_08_PIN);
-    servo_09.attach(SERVO_09_PIN);
-    servo_10.attach(SERVO_10_PIN);
-    servo_11.attach(SERVO_11_PIN);
-    servo_12.attach(SERVO_12_PIN);
-    servo_13.attach(SERVO_13_PIN);
-    servo_14.attach(SERVO_14_PIN);
+    SERVOCHECK(servo_01.attach(SERVO_01_PIN));
+    SERVOCHECK(servo_02.attach(SERVO_02_PIN));
+    SERVOCHECK(servo_03.attach(SERVO_03_PIN));
+    SERVOCHECK(servo_04.attach(SERVO_04_PIN));
+    SERVOCHECK(servo_05.attach(SERVO_05_PIN));
+    SERVOCHECK(servo_06.attach(SERVO_06_PIN));
+    SERVOCHECK(servo_07.attach(SERVO_07_PIN));
+    SERVOCHECK(servo_08.attach(SERVO_08_PIN));
+    SERVOCHECK(servo_09.attach(SERVO_09_PIN));
+    SERVOCHECK(servo_10.attach(SERVO_10_PIN));
+    SERVOCHECK(servo_11.attach(SERVO_11_PIN));
+    SERVOCHECK(servo_12.attach(SERVO_12_PIN));
+    SERVOCHECK(servo_13.attach(SERVO_13_PIN));
+    SERVOCHECK(servo_14.attach(SERVO_14_PIN));
 }
 
 void drop() {
     // Define the MotionGenerator object
-    MotionGenerator *trapezoidalProfile = new MotionGenerator(200, 500, 0);
+    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 500, 0);
 
     while (!trapezoidalProfile->getFinished()) {
         // Retrieve calculated position
         float positionRef = 100;
         float position = trapezoidalProfile->update(positionRef);
         Serial.println(position);
+        servo_11.write(position);
         delay(10);
     }
 }
