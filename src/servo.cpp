@@ -1,5 +1,8 @@
 #include "servo.h"
 
+#define DEFAULT_uS_LOW 544
+#define DEFAULT_uS_HIGH 2400
+
 Servo servo_01;
 Servo servo_02;
 Servo servo_03;
@@ -20,8 +23,8 @@ Servo servo_14;
 
 #define TIPPER_POS_0 90
 
-// #define SERVO_TIP_4 servo_11
-// #define SERVO_TIP_3 servo_10
+#define SERVO_TIP_4 servo_04
+#define SERVO_TIP_3 servo_03
 #define SERVO_TIP_2 servo_02
 #define SERVO_TIP_1 servo_01
 
@@ -30,9 +33,16 @@ void init_servos() {
     ESP32PWM::allocateTimer(1);
     ESP32PWM::allocateTimer(2);
     ESP32PWM::allocateTimer(3);
+    // if (!ledcAttach(SERVO_02_PIN, 50, 10)) {
+    //     Serial.println("aaaaaaaaaaa");
+    //     delay(10000);
+    // }
+    // ledcAttach(SERVO_02_PIN, 50, 10);
+    // ledcAttach(SERVO_03_PIN, 50, 10);
+    // ledcAttach(SERVO_04_PIN, 50, 10);
     SERVOCHECK(servo_01.attach(SERVO_01_PIN));
-    SERVOCHECK(servo_02.attach(SERVO_02_PIN));
-    // SERVOCHECK(servo_03.attach(SERVO_03_PIN));
+    // SERVOCHECK(servo_02.attach(SERVO_02_PIN));
+    SERVOCHECK(servo_03.attach(SERVO_03_PIN));
     // SERVOCHECK(servo_04.attach(SERVO_04_PIN));
     // SERVOCHECK(servo_05.attach(SERVO_05_PIN));
     // SERVOCHECK(servo_06.attach(SERVO_06_PIN));
@@ -43,8 +53,16 @@ void init_servos() {
     // SERVOCHECK(servo_11.attach(SERVO_11_PIN));
     // SERVOCHECK(servo_12.attach(SERVO_12_PIN));
 
+    // float value = map(90, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
+    // ledcWrite(SERVO_02_PIN, value);
+    // ledcWrite(SERVO_02_PIN, 125);
+    // ledcWrite(SERVO_03_PIN, 125);
+    // ledcWrite(SERVO_04_PIN, 125);
+
     SERVO_TIP_1.write(TIPPER_POS_0);
-    SERVO_TIP_2.write(TIPPER_POS_0);
+    // SERVO_TIP_2.write(TIPPER_POS_0);
+    SERVO_TIP_3.write(TIPPER_POS_0);
+    // SERVO_TIP_4.write(TIPPER_POS_0);
     // servo_01.write(0);
     // servo_02.write(0);
     // servo_03.write(0);
@@ -53,8 +71,6 @@ void init_servos() {
     // servo_06.write(0);
     // servo_07.write(0);
     // servo_08.write(0);
-    // SERVO_TIP_3.write(TIPPER_POS_0);
-    // SERVO_TIP_4.write(TIPPER_POS_0);
     // servo_12.write(0);
     // SERVOCHECK(servo_13.attach(SERVO_13_PIN));
     // SERVOCHECK(servo_14.attach(SERVO_14_PIN));
@@ -81,12 +97,14 @@ void drop() {
     // Define the MotionGenerator object
     MotionGenerator *trapezoidalProfile = new MotionGenerator(100, 50, 90);
     float positionRef;
-
     positionRef = 180;
     while (!trapezoidalProfile->getFinished()) {
         float position = trapezoidalProfile->update(positionRef);
         Serial.println(position);
-        SERVO_TIP_1.write(position);
+        // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
+        // ledcWrite(SERVO_02_PIN, value);
+        // SERVO_TIP_3.write(TIPPER_POS_0);
+        SERVO_TIP_3.write(position);
         delay(25);
     }
     positionRef = 90;
@@ -94,25 +112,33 @@ void drop() {
     while (!trapezoidalProfile->getFinished()) {
         float position = trapezoidalProfile->update(positionRef);
         Serial.println(position);
-        SERVO_TIP_1.write(position);
+        // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
+        // ledcWrite(SERVO_02_PIN, value);
+        // SERVO_TIP_3.write(TIPPER_POS_0);
+        SERVO_TIP_3.write(position);
         delay(25);
     }
-
-    trapezoidalProfile->setInitPosition(90);
-    trapezoidalProfile->reset();
-    positionRef = 180;
-    while (!trapezoidalProfile->getFinished()) {
-        float position = trapezoidalProfile->update(positionRef);
-        Serial.println(position);
-        SERVO_TIP_2.write(position);
+    MotionGenerator *trapezoidalProfile_2 = new MotionGenerator(100, 50, 90);
+    float positionRef_2;
+    positionRef_2 = 180;
+    while (!trapezoidalProfile_2->getFinished()) {
+        float position_2 = trapezoidalProfile_2->update(positionRef_2);
+        Serial.println(position_2);
+        // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
+        // ledcWrite(SERVO_02_PIN, value);
+        // SERVO_TIP_3.write(TIPPER_POS_0);
+        SERVO_TIP_1.write(position_2);
         delay(25);
     }
-    positionRef = 90;
-    trapezoidalProfile->update(positionRef);
-    while (!trapezoidalProfile->getFinished()) {
-        float position = trapezoidalProfile->update(positionRef);
-        Serial.println(position);
-        SERVO_TIP_2.write(position);
+    positionRef_2 = 90;
+    trapezoidalProfile_2->update(positionRef_2);
+    while (!trapezoidalProfile_2->getFinished()) {
+        float position_2 = trapezoidalProfile_2->update(positionRef_2);
+        Serial.println(position_2);
+        // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
+        // ledcWrite(SERVO_02_PIN, value);
+        // SERVO_TIP_3.write(TIPPER_POS_0);
+        SERVO_TIP_1.write(position_2);
         delay(25);
     }
 }

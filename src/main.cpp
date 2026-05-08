@@ -42,14 +42,15 @@ void setup() {
   Serial.begin(115200);
   Serial.println("bf lkeds");
   delay(100),
-  FastLED.addLeds<WS2812B, RGB_LED_PIN, GRB>(led, 1);
+  // FastLED.addLeds<WS2812B, RGB_LED_PIN, GRB>(led, 1);
   delay(100),
   Serial.println("leds added");
   delay(100),
-  xTaskCreatePinnedToCore(LightTask, "LightTask", 2048, NULL, 2, NULL, 1);
+  // xTaskCreatePinnedToCore(LightTask, "LightTask", 2048, NULL, 2, NULL, 1);
   init_servos();
   delay(1000);
-  drop();
+  while(true)
+   drop();
   drop();
   drop();
   drop();
