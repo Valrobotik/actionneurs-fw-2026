@@ -52,6 +52,10 @@ void setup() {
   update_arm(ARM_POS_DROP);
   delay(2000);
   update_arm(ARM_POS_PICKUP);
+  delay(2000);
+  update_arm(ARM_POS_0);
+  delay(2000);
+  update_grabber(GRABBER_POS_CLOSED);
   init_ros();
 }
 
