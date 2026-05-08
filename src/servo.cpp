@@ -21,13 +21,6 @@ Servo servo_14;
 #define SERVOCHECK(fn) { int temp_rc = fn; if((!temp_rc)){Serial.println("Erreur Servo");} \
     else {Serial.printf("Attached to channel: %d\n", temp_rc);}}
 
-#define TIPPER_POS_0 110
-
-#define SERVO_TIP_4 servo_04
-#define SERVO_TIP_3 servo_03
-#define SERVO_TIP_2 servo_02
-#define SERVO_TIP_1 servo_01
-
 void init_servos() {
     ESP32PWM::allocateTimer(0);
     ESP32PWM::allocateTimer(1);
@@ -52,28 +45,13 @@ void init_servos() {
     // SERVOCHECK(servo_10.attach(SERVO_10_PIN));
     // SERVOCHECK(servo_11.attach(SERVO_11_PIN));
     // SERVOCHECK(servo_12.attach(SERVO_12_PIN));
+}
 
-    // float value = map(90, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
-    // ledcWrite(SERVO_02_PIN, value);
-    // ledcWrite(SERVO_02_PIN, 125);
-    // ledcWrite(SERVO_03_PIN, 125);
-    // ledcWrite(SERVO_04_PIN, 125);
-
-    SERVO_TIP_1.write(90);
-    SERVO_TIP_2.write(90);
-    SERVO_TIP_3.write(90);
-    SERVO_TIP_4.write(90);
-    // servo_01.write(0);
-    // servo_02.write(090
-    // servo_03.write(0);
-    // servo_04.write(0);
-    // servo_05.write(0);
-    // servo_06.write(0);
-    // servo_07.write(0);
-    // servo_08.write(0);
-    // servo_12.write(0);
-    // SERVOCHECK(servo_13.attach(SERVO_13_PIN));
-    // SERVOCHECK(servo_14.attach(SERVO_14_PIN));
+void init_pos() {
+    SERVO_TIP_1.write(TIPPER_POS_0);
+    SERVO_TIP_2.write(TIPPER_POS_0);
+    SERVO_TIP_3.write(TIPPER_POS_0);
+    SERVO_TIP_4.write(TIPPER_POS_0);
 }
 
 void disable_servos() {
@@ -150,4 +128,11 @@ void drop() {
 }
 
 void raise() {
+}
+
+void update_tippers(int* states) {
+  SERVO_TIP_1.write(states[0]);
+  SERVO_TIP_2.write(states[1]);
+  SERVO_TIP_3.write(states[2]);
+  SERVO_TIP_4.write(states[3]);
 }

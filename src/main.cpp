@@ -40,23 +40,14 @@ void LightTask(void *pvParams) {
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("bf lkeds");
-  delay(100),
-  // FastLED.addLeds<WS2812B, RGB_LED_PIN, GRB>(led, 1);
-  delay(100),
-  Serial.println("leds added");
-  delay(100),
-  // xTaskCreatePinnedToCore(LightTask, "LightTask", 2048, NULL, 2, NULL, 1);
+  FastLED.addLeds<WS2812B, RGB_LED_PIN, GRB>(led, 1);
+  xTaskCreatePinnedToCore(LightTask, "LightTask", 2048, NULL, 2, NULL, 1);
   init_servos();
-  delay(1000);
-  while(true)
-   drop();
-  drop();
-  drop();
-  drop();
+  init_pos();
+  delay(2000);
+  int poses[] = {TIPPER_POS_SLIDE, TIPPER_POS_PUSH, TIPPER_POS_SLIDE, TIPPER_POS_PUSH};
+  update_tippers(poses);
   init_ros();
-  delay(10000);
-  // disable_servos();
 }
 
 void loop() {
