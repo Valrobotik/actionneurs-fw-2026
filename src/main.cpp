@@ -47,6 +47,11 @@ void setup() {
   delay(2000);
   int poses[] = {TIPPER_POS_SLIDE, TIPPER_POS_PUSH, TIPPER_POS_SLIDE, TIPPER_POS_PUSH};
   update_tippers(poses);
+  delay(2000);
+  init_pos();
+  update_arm(ARM_POS_DROP);
+  delay(2000);
+  update_arm(ARM_POS_PICKUP);
   init_ros();
 }
 

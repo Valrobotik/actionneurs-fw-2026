@@ -1,8 +1,5 @@
 #include "servo.h"
 
-#define DEFAULT_uS_LOW 544
-#define DEFAULT_uS_HIGH 2400
-
 Servo servo_01;
 Servo servo_02;
 Servo servo_03;
@@ -41,7 +38,7 @@ void init_servos() {
     // SERVOCHECK(servo_06.attach(SERVO_06_PIN));
     // SERVOCHECK(servo_07.attach(SERVO_07_PIN));
     // SERVOCHECK(servo_08.attach(SERVO_08_PIN));
-    // SERVOCHECK(servo_09.attach(SERVO_09_PIN));
+    SERVOCHECK(servo_09.attach(SERVO_09_PIN));
     // SERVOCHECK(servo_10.attach(SERVO_10_PIN));
     // SERVOCHECK(servo_11.attach(SERVO_11_PIN));
     // SERVOCHECK(servo_12.attach(SERVO_12_PIN));
@@ -52,6 +49,8 @@ void init_pos() {
     SERVO_TIP_2.write(TIPPER_POS_0);
     SERVO_TIP_3.write(TIPPER_POS_0);
     SERVO_TIP_4.write(TIPPER_POS_0);
+
+    SERVO_ARM.write(ARM_POS_0);
 }
 
 void disable_servos() {
@@ -135,4 +134,13 @@ void update_tippers(int* states) {
   SERVO_TIP_2.write(states[1]);
   SERVO_TIP_3.write(states[2]);
   SERVO_TIP_4.write(states[3]);
+}
+
+void update_arm(int pose) {
+    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, SERVO_ARM.read());
+    while (!trapezoidalProfile->getFinished()) {
+        float position = trapezoidalProfile->update(pose);
+        SERVO_ARM.write(position);
+        delay(25);
+    }
 }
