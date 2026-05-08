@@ -6,11 +6,13 @@ rcl_publisher_t publisher;
 std_msgs__msg__Bool msg;
 std_msgs__msg__Bool received_msg_drop;
 std_msgs__msg__Bool received_msg_grab;
+std_msgs__msg__Bool received_msg_open;
 rclc_support_t support;
 rcl_allocator_t allocator;
 rcl_node_t node;
 rcl_subscription_t subscriber_drop;
 rcl_subscription_t subscriber_grab;
+rcl_subscription_t subscriber_open;
 rclc_executor_t executor;
 
 void init_ros() {
@@ -26,12 +28,21 @@ void ZdcHandshakeCallback(const void* msgin) {
   Serial.print("pince en bas...");
 }
 
-void GrabHandshakeCallback(const void* msgin) {
+void GrabCallback(const void* msgin) {
   const std_msgs__msg__Bool* msg = (const std_msgs__msg__Bool*)msgin;
   if (msg->data) {
     update_grabber(GRABBER_POS_CLOSED);
   } else {
     update_grabber(GRABBER_POS_OPEN);
+  }
+}
+
+void OpenCallback(const void* msgin) {
+  const std_msgs__msg__Bool* msg = (const std_msgs__msg__Bool*)msgin;
+  if (msg->data) {
+    update_arm(ARM_POS_PICKUP);
+  } else {
+    update_arm(ARM_POS_0);
   }
 }
 
@@ -50,18 +61,23 @@ bool create_entities() {
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
     "/temp"));
 
-  RCCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
+  RCCHECK(rclc_executor_init(&executor, &support.context, 3, &allocator));
   RCCHECK(rclc_subscription_init_default(&subscriber_drop, &node,
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
     "/drop"));
   RCCHECK(rclc_subscription_init_default(&subscriber_grab, &node,
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
     "/grab"));
+  RCCHECK(rclc_subscription_init_default(&subscriber_open, &node,
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
+    "/open"));
 
   RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_drop, &received_msg_drop,
       &ZdcHandshakeCallback, ON_NEW_DATA));
   RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_grab, &received_msg_grab,
-      &GrabHandshakeCallback, ON_NEW_DATA));
+      &GrabCallback, ON_NEW_DATA));
+  RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_open, &received_msg_open,
+      &OpenCallback, ON_NEW_DATA));
 
   Serial.println("ROS initialized");
   
