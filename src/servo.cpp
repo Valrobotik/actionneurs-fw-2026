@@ -16,36 +16,104 @@ Servo servo_13;
 Servo servo_14;
 
 #define SERVOCHECK(fn) { int temp_rc = fn; if((!temp_rc)){Serial.println("Erreur Servo");} \
-    else {Serial.printf("Attached to channel: %d", temp_rc);}}
+    else {Serial.printf("Attached to channel: %d\n", temp_rc);}}
+
+#define TIPPER_POS_0 90
+
+// #define SERVO_TIP_4 servo_11
+// #define SERVO_TIP_3 servo_10
+#define SERVO_TIP_2 servo_02
+#define SERVO_TIP_1 servo_01
 
 void init_servos() {
+    ESP32PWM::allocateTimer(0);
+    ESP32PWM::allocateTimer(1);
+    ESP32PWM::allocateTimer(2);
+    ESP32PWM::allocateTimer(3);
     SERVOCHECK(servo_01.attach(SERVO_01_PIN));
     SERVOCHECK(servo_02.attach(SERVO_02_PIN));
-    SERVOCHECK(servo_03.attach(SERVO_03_PIN));
-    SERVOCHECK(servo_04.attach(SERVO_04_PIN));
-    SERVOCHECK(servo_05.attach(SERVO_05_PIN));
-    SERVOCHECK(servo_06.attach(SERVO_06_PIN));
-    SERVOCHECK(servo_07.attach(SERVO_07_PIN));
-    SERVOCHECK(servo_08.attach(SERVO_08_PIN));
-    SERVOCHECK(servo_09.attach(SERVO_09_PIN));
-    SERVOCHECK(servo_10.attach(SERVO_10_PIN));
-    SERVOCHECK(servo_11.attach(SERVO_11_PIN));
-    SERVOCHECK(servo_12.attach(SERVO_12_PIN));
-    SERVOCHECK(servo_13.attach(SERVO_13_PIN));
-    SERVOCHECK(servo_14.attach(SERVO_14_PIN));
+    // SERVOCHECK(servo_03.attach(SERVO_03_PIN));
+    // SERVOCHECK(servo_04.attach(SERVO_04_PIN));
+    // SERVOCHECK(servo_05.attach(SERVO_05_PIN));
+    // SERVOCHECK(servo_06.attach(SERVO_06_PIN));
+    // SERVOCHECK(servo_07.attach(SERVO_07_PIN));
+    // SERVOCHECK(servo_08.attach(SERVO_08_PIN));
+    // SERVOCHECK(servo_09.attach(SERVO_09_PIN));
+    // SERVOCHECK(servo_10.attach(SERVO_10_PIN));
+    // SERVOCHECK(servo_11.attach(SERVO_11_PIN));
+    // SERVOCHECK(servo_12.attach(SERVO_12_PIN));
+
+    SERVO_TIP_1.write(TIPPER_POS_0);
+    SERVO_TIP_2.write(TIPPER_POS_0);
+    // servo_01.write(0);
+    // servo_02.write(0);
+    // servo_03.write(0);
+    // servo_04.write(0);
+    // servo_05.write(0);
+    // servo_06.write(0);
+    // servo_07.write(0);
+    // servo_08.write(0);
+    // SERVO_TIP_3.write(TIPPER_POS_0);
+    // SERVO_TIP_4.write(TIPPER_POS_0);
+    // servo_12.write(0);
+    // SERVOCHECK(servo_13.attach(SERVO_13_PIN));
+    // SERVOCHECK(servo_14.attach(SERVO_14_PIN));
+}
+
+void disable_servos() {
+    servo_01.detach();
+    servo_02.detach();
+    servo_03.detach();
+    servo_04.detach();
+    servo_05.detach();
+    servo_06.detach();
+    servo_07.detach();
+    servo_08.detach();
+    servo_09.detach();
+    servo_10.detach();
+    servo_11.detach();
+    servo_12.detach();
+    // SERVOCHECK(servo_13.attach(SERVO_13_PIN));
+    // SERVOCHECK(servo_14.attach(SERVO_14_PIN));
 }
 
 void drop() {
     // Define the MotionGenerator object
-    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 500, 0);
+    MotionGenerator *trapezoidalProfile = new MotionGenerator(100, 50, 90);
+    float positionRef;
 
+    positionRef = 180;
     while (!trapezoidalProfile->getFinished()) {
-        // Retrieve calculated position
-        float positionRef = 100;
         float position = trapezoidalProfile->update(positionRef);
         Serial.println(position);
-        servo_11.write(position);
-        delay(10);
+        SERVO_TIP_1.write(position);
+        delay(25);
+    }
+    positionRef = 90;
+    trapezoidalProfile->update(positionRef);
+    while (!trapezoidalProfile->getFinished()) {
+        float position = trapezoidalProfile->update(positionRef);
+        Serial.println(position);
+        SERVO_TIP_1.write(position);
+        delay(25);
+    }
+
+    trapezoidalProfile->setInitPosition(90);
+    trapezoidalProfile->reset();
+    positionRef = 180;
+    while (!trapezoidalProfile->getFinished()) {
+        float position = trapezoidalProfile->update(positionRef);
+        Serial.println(position);
+        SERVO_TIP_2.write(position);
+        delay(25);
+    }
+    positionRef = 90;
+    trapezoidalProfile->update(positionRef);
+    while (!trapezoidalProfile->getFinished()) {
+        float position = trapezoidalProfile->update(positionRef);
+        Serial.println(position);
+        SERVO_TIP_2.write(position);
+        delay(25);
     }
 }
 

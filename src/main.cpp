@@ -48,8 +48,14 @@ void setup() {
   delay(100),
   xTaskCreatePinnedToCore(LightTask, "LightTask", 2048, NULL, 2, NULL, 1);
   init_servos();
+  delay(1000);
+  drop();
+  drop();
+  drop();
   drop();
   init_ros();
+  delay(10000);
+  // disable_servos();
 }
 
 void loop() {

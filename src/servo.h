@@ -7,5 +7,6 @@
 #include "pin_definitions.h"
 
 void init_servos();
+void disable_servos();
 void drop();
 void raise();
