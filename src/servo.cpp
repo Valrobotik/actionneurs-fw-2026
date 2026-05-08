@@ -21,7 +21,7 @@ Servo servo_14;
 #define SERVOCHECK(fn) { int temp_rc = fn; if((!temp_rc)){Serial.println("Erreur Servo");} \
     else {Serial.printf("Attached to channel: %d\n", temp_rc);}}
 
-#define TIPPER_POS_0 90
+#define TIPPER_POS_0 110
 
 #define SERVO_TIP_4 servo_04
 #define SERVO_TIP_3 servo_03
@@ -41,9 +41,9 @@ void init_servos() {
     // ledcAttach(SERVO_03_PIN, 50, 10);
     // ledcAttach(SERVO_04_PIN, 50, 10);
     SERVOCHECK(servo_01.attach(SERVO_01_PIN));
-    // SERVOCHECK(servo_02.attach(SERVO_02_PIN));
+    SERVOCHECK(servo_02.attach(SERVO_02_PIN));
     SERVOCHECK(servo_03.attach(SERVO_03_PIN));
-    // SERVOCHECK(servo_04.attach(SERVO_04_PIN));
+    SERVOCHECK(servo_04.attach(SERVO_04_PIN));
     // SERVOCHECK(servo_05.attach(SERVO_05_PIN));
     // SERVOCHECK(servo_06.attach(SERVO_06_PIN));
     // SERVOCHECK(servo_07.attach(SERVO_07_PIN));
@@ -59,12 +59,12 @@ void init_servos() {
     // ledcWrite(SERVO_03_PIN, 125);
     // ledcWrite(SERVO_04_PIN, 125);
 
-    SERVO_TIP_1.write(TIPPER_POS_0);
-    // SERVO_TIP_2.write(TIPPER_POS_0);
-    SERVO_TIP_3.write(TIPPER_POS_0);
-    // SERVO_TIP_4.write(TIPPER_POS_0);
+    SERVO_TIP_1.write(90);
+    SERVO_TIP_2.write(90);
+    SERVO_TIP_3.write(90);
+    SERVO_TIP_4.write(90);
     // servo_01.write(0);
-    // servo_02.write(0);
+    // servo_02.write(090
     // servo_03.write(0);
     // servo_04.write(0);
     // servo_05.write(0);
@@ -95,16 +95,19 @@ void disable_servos() {
 
 void drop() {
     // Define the MotionGenerator object
-    MotionGenerator *trapezoidalProfile = new MotionGenerator(100, 50, 90);
+    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, 90);
     float positionRef;
-    positionRef = 180;
+    positionRef = 150;
     while (!trapezoidalProfile->getFinished()) {
         float position = trapezoidalProfile->update(positionRef);
         Serial.println(position);
         // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
         // ledcWrite(SERVO_02_PIN, value);
         // SERVO_TIP_3.write(TIPPER_POS_0);
+        SERVO_TIP_1.write(position);
+        SERVO_TIP_2.write(position);
         SERVO_TIP_3.write(position);
+        SERVO_TIP_4.write(position);
         delay(25);
     }
     positionRef = 90;
@@ -115,32 +118,35 @@ void drop() {
         // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
         // ledcWrite(SERVO_02_PIN, value);
         // SERVO_TIP_3.write(TIPPER_POS_0);
+        SERVO_TIP_1.write(position);
+        SERVO_TIP_2.write(position);
         SERVO_TIP_3.write(position);
+        SERVO_TIP_4.write(position);
         delay(25);
     }
-    MotionGenerator *trapezoidalProfile_2 = new MotionGenerator(100, 50, 90);
-    float positionRef_2;
-    positionRef_2 = 180;
-    while (!trapezoidalProfile_2->getFinished()) {
-        float position_2 = trapezoidalProfile_2->update(positionRef_2);
-        Serial.println(position_2);
-        // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
-        // ledcWrite(SERVO_02_PIN, value);
-        // SERVO_TIP_3.write(TIPPER_POS_0);
-        SERVO_TIP_1.write(position_2);
-        delay(25);
-    }
-    positionRef_2 = 90;
-    trapezoidalProfile_2->update(positionRef_2);
-    while (!trapezoidalProfile_2->getFinished()) {
-        float position_2 = trapezoidalProfile_2->update(positionRef_2);
-        Serial.println(position_2);
-        // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
-        // ledcWrite(SERVO_02_PIN, value);
-        // SERVO_TIP_3.write(TIPPER_POS_0);
-        SERVO_TIP_1.write(position_2);
-        delay(25);
-    }
+    // MotionGenerator *trapezoidalProfile_2 = new MotionGenerator(100, 50, 90);
+    // float positionRef_2;
+    // positionRef_2 = 180;
+    // while (!trapezoidalProfile_2->getFinished()) {
+    //     float position_2 = trapezoidalProfile_2->update(positionRef_2);
+    //     Serial.println(position_2);
+    //     // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
+    //     // ledcWrite(SERVO_02_PIN, value);
+    //     // SERVO_TIP_3.write(TIPPER_POS_0);
+    //     SERVO_TIP_1.write(position_2);
+    //     delay(25);
+    // }
+    // positionRef_2 = 90;
+    // trapezoidalProfile_2->update(positionRef_2);
+    // while (!trapezoidalProfile_2->getFinished()) {
+    //     float position_2 = trapezoidalProfile_2->update(positionRef_2);
+    //     Serial.println(position_2);
+    //     // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
+    //     // ledcWrite(SERVO_02_PIN, value);
+    //     // SERVO_TIP_3.write(TIPPER_POS_0);
+    //     SERVO_TIP_1.write(position_2);
+    //     delay(25);
+    // }
 }
 
 void raise() {
