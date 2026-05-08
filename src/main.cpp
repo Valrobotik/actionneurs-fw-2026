@@ -44,24 +44,24 @@ void setup() {
   xTaskCreatePinnedToCore(LightTask, "LightTask", 2048, NULL, 2, NULL, 1);
   init_servos();
   init_pos();
-  delay(2000);
-  int poses[] = {TIPPER_POS_SLIDE, TIPPER_POS_PUSH, TIPPER_POS_SLIDE, TIPPER_POS_PUSH};
-  update_tippers(poses);
-  delay(2000);
-  init_pos();
-  update_arm(ARM_POS_DROP);
-  delay(2000);
-  update_arm(ARM_POS_PICKUP);
-  delay(2000);
-  update_arm(ARM_POS_0);
-  delay(2000);
-  update_grabber(GRABBER_POS_CLOSED);
-  delay(2000);
-  update_slider(true);
-  delay(2000);
-  update_slider(false);
-  delay(2000);
   init_ros();
+  // delay(2000);
+  // int poses[] = {TIPPER_POS_SLIDE, TIPPER_POS_PUSH, TIPPER_POS_SLIDE, TIPPER_POS_PUSH};
+  // update_tippers(poses);
+  // delay(2000);
+  // init_pos();
+  // update_arm(ARM_POS_DROP);
+  // delay(2000);
+  // update_arm(ARM_POS_PICKUP);
+  // delay(2000);
+  // update_arm(ARM_POS_0);
+  // delay(2000);
+  // update_grabber(GRABBER_POS_CLOSED);
+  // delay(2000);
+  // update_slider(true);
+  // delay(2000);
+  // update_slider(false);
+  // delay(2000);
 }
 
 void loop() {
