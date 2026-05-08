@@ -18,7 +18,8 @@
 #define GRABBER_POS_CLOSED 140
 
 #define SLIDER_POS_0 0
-#define SLIDER_POS_DEPLOYED 90
+#define SLIDER_POS_DEPLOYED_1 90
+#define SLIDER_POS_DEPLOYED_2 180
 
 #define SERVO_TIP_4 servo_04
 #define SERVO_TIP_3 servo_03
@@ -40,4 +41,4 @@ void raise();
 void update_tippers(int* states);
 void update_arm(int pose);
 void update_grabber(int pose);
-void update_slider(int pose);
+void update_slider(bool is_deployed);

@@ -160,12 +160,16 @@ void update_grabber(int pose) {
     }
 }
 
-void update_slider(int pose) {
+void update_slider(bool is_deployed) {
     MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, SERVO_SLIDER_1.read());
-    while (!trapezoidalProfile->getFinished()) {
-        float position = trapezoidalProfile->update(pose);
+    MotionGenerator *trapezoidalProfile_2 = new MotionGenerator(50, 50, SERVO_SLIDER_2.read());
+    int pose_1 = is_deployed ? SLIDER_POS_DEPLOYED_1 : SLIDER_POS_0;
+    int pose_2 = is_deployed ? SLIDER_POS_DEPLOYED_2 : SLIDER_POS_0;
+    while (!trapezoidalProfile->getFinished() || !trapezoidalProfile_2->getFinished()) {
+        float position = trapezoidalProfile->update(pose_1);
+        float position_2 = trapezoidalProfile->update(pose_2);
         SERVO_SLIDER_1.write(position);
-        SERVO_SLIDER_2.write(-position);
+        SERVO_SLIDER_2.write(position_2);
         delay(25);
     }
 }

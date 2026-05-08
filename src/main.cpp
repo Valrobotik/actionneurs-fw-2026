@@ -57,9 +57,9 @@ void setup() {
   delay(2000);
   update_grabber(GRABBER_POS_CLOSED);
   delay(2000);
-  update_slider(SLIDER_POS_DEPLOYED);
+  update_slider(true);
   delay(2000);
-  update_slider(SLIDER_POS_0);
+  update_slider(false);
   init_ros();
 }
 
