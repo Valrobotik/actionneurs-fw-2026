@@ -78,11 +78,11 @@ void disable_servos() {
 
 void drop() {
     // Define the MotionGenerator object
-    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, 90);
+    MotionGenerator trapezoidalProfile(50, 50, 90);
     float positionRef;
     positionRef = 150;
-    while (!trapezoidalProfile->getFinished()) {
-        float position = trapezoidalProfile->update(positionRef);
+    while (!trapezoidalProfile.getFinished()) {
+        float position = trapezoidalProfile.update(positionRef);
         Serial.println(position);
         // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
         // ledcWrite(SERVO_02_PIN, value);
@@ -94,9 +94,9 @@ void drop() {
         delay(25);
     }
     positionRef = 90;
-    trapezoidalProfile->update(positionRef);
-    while (!trapezoidalProfile->getFinished()) {
-        float position = trapezoidalProfile->update(positionRef);
+    trapezoidalProfile.update(positionRef);
+    while (!trapezoidalProfile.getFinished()) {
+        float position = trapezoidalProfile.update(positionRef);
         Serial.println(position);
         // float value = map(position, 0, 180, DEFAULT_uS_LOW, DEFAULT_uS_HIGH);
         // ledcWrite(SERVO_02_PIN, value);
@@ -143,31 +143,31 @@ void update_tippers(int* states) {
 }
 
 void update_arm(int pose) {
-    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, SERVO_ARM.read());
-    while (!trapezoidalProfile->getFinished()) {
-        float position = trapezoidalProfile->update(pose);
+    MotionGenerator trapezoidalProfile(50, 50, SERVO_ARM.read());
+    while (!trapezoidalProfile.getFinished()) {
+        float position = trapezoidalProfile.update(pose);
         SERVO_ARM.write(position);
         delay(25);
     }
 }
 
 void update_grabber(int pose) {
-    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, SERVO_GRABBER.read());
-    while (!trapezoidalProfile->getFinished()) {
-        float position = trapezoidalProfile->update(pose);
+    MotionGenerator trapezoidalProfile(50, 50, SERVO_GRABBER.read());
+    while (!trapezoidalProfile.getFinished()) {
+        float position = trapezoidalProfile.update(pose);
         SERVO_GRABBER.write(position);
         delay(25);
     }
 }
 
 void update_slider(bool is_deployed) {
-    MotionGenerator *trapezoidalProfile = new MotionGenerator(50, 50, SERVO_SLIDER_1.read());
-    MotionGenerator *trapezoidalProfile_2 = new MotionGenerator(50, 50, SERVO_SLIDER_2.read());
+    MotionGenerator trapezoidalProfile(50, 50, SERVO_SLIDER_1.read());
+    MotionGenerator trapezoidalProfile_2(50, 50, SERVO_SLIDER_2.read());
     int pose_1 = is_deployed ? SLIDER_POS_DEPLOYED_1 : SLIDER_POS_0_1;
     int pose_2 = is_deployed ? SLIDER_POS_DEPLOYED_2 : SLIDER_POS_0_2;
-    while (!(trapezoidalProfile->getFinished() && trapezoidalProfile_2->getFinished())) {
-        float position = trapezoidalProfile->update(pose_1);
-        float position_2 = trapezoidalProfile_2->update(pose_2);
+    while (!(trapezoidalProfile.getFinished() && trapezoidalProfile_2.getFinished())) {
+        float position = trapezoidalProfile.update(pose_1);
+        float position_2 = trapezoidalProfile_2.update(pose_2);
         SERVO_SLIDER_1.write(position);
         SERVO_SLIDER_2.write(position_2);
         delay(25);
