@@ -4,7 +4,7 @@ states state;
 
 rcl_publisher_t publisher;
 std_msgs__msg__Bool msg;
-std_msgs__msg__Bool received_msg_drop;
+std_msgs__msg__String received_msg_drop;
 std_msgs__msg__Bool received_msg_grab;
 std_msgs__msg__Bool received_msg_open;
 std_msgs__msg__Bool received_msg_slider;
@@ -25,9 +25,22 @@ void init_ros() {
   state = states::WAITING_AGENT;
 }
 
-void ZdcHandshakeCallback(const void* msgin) {
-  const std_msgs__msg__Bool* msg = (const std_msgs__msg__Bool*)msgin;
-  Serial.println("pince en bas...");
+void DropCallback(const void* msgin) {
+  const std_msgs__msg__String* msg = (const std_msgs__msg__String*)msgin;
+  if (msg->data.size != 4)
+    return;
+  update_arm(ARM_POS_DROP);
+  delay(250);
+  int lookup[] = {TIPPER_POS_SLIDE, TIPPER_POS_PUSH};
+  int poses[4];
+  for (size_t i = 0; i < 4; i++) {
+    poses[i] = lookup[(msg->data.data[i] -'0')];
+  }
+  update_tippers(poses);
+  delay(2000);
+  update_arm(ARM_POS_0);
+  int poses_0[] = {TIPPER_POS_0, TIPPER_POS_0, TIPPER_POS_0, TIPPER_POS_0};
+  update_tippers(poses_0);
 }
 
 void GrabCallback(const void* msgin) {
@@ -72,7 +85,7 @@ bool create_entities() {
 
   RCCHECK(rclc_executor_init(&executor, &support.context, 4, &allocator));
   RCCHECK(rclc_subscription_init_default(&subscriber_drop, &node,
-    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
+    ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, String),
     "/drop"));
   RCCHECK(rclc_subscription_init_default(&subscriber_grab, &node,
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
@@ -84,8 +97,12 @@ bool create_entities() {
     ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Bool),
     "/slider"));
 
+  std_msgs__msg__String__init(&received_msg_drop);
+  received_msg_drop.data.data = (char*) malloc(5);
+  received_msg_drop.data.capacity = 5;
+  received_msg_drop.data.size = 0;
   RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_drop, &received_msg_drop,
-      &ZdcHandshakeCallback, ON_NEW_DATA));
+      &DropCallback, ON_NEW_DATA));
   RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_grab, &received_msg_grab,
       &GrabCallback, ON_NEW_DATA));
   RCCHECK(rclc_executor_add_subscription(&executor, &subscriber_open, &received_msg_open,
@@ -110,6 +127,8 @@ void destroy_entities() {
   (void) rcl_subscription_fini(&subscriber_slider, &node);
   (void) rcl_node_fini(&node);
   rclc_support_fini(&support);
+
+  std_msgs__msg__String__fini(&received_msg_drop);
 }
 
 void ros_loop() {

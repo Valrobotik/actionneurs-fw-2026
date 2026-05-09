@@ -22,10 +22,10 @@
 #define SLIDER_POS_DEPLOYED_1 0
 #define SLIDER_POS_DEPLOYED_2 90
 
-#define SERVO_TIP_4 servo_04
-#define SERVO_TIP_3 servo_03
-#define SERVO_TIP_2 servo_02
-#define SERVO_TIP_1 servo_01
+#define SERVO_TIP_4 servo_01
+#define SERVO_TIP_3 servo_02
+#define SERVO_TIP_2 servo_03
+#define SERVO_TIP_1 servo_04
 
 #define SERVO_ARM servo_09
 #define SERVO_GRABBER servo_08

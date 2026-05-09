@@ -5,6 +5,7 @@
 #include <rclc/rclc.h>
 #include <rclc/executor.h>
 #include <std_msgs/msg/bool.h>
+#include <std_msgs/msg/string.h>
 #include <rosidl_runtime_c/string_functions.h>
 
 #include "pin_definitions.h"
