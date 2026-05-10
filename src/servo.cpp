@@ -80,10 +80,27 @@ void disable_servos() {
 }
 
 void update_tippers(int* states) {
-  SERVO_TIP_1.write(states[0]);
-  SERVO_TIP_2.write(states[1]);
-  SERVO_TIP_3.write(states[2]);
-  SERVO_TIP_4.write(states[3]);
+    servos_state = servos_state_t::MOVING;
+
+    MotionGenerator profile1(50, 50, SERVO_TIP_1.read());
+    MotionGenerator profile2(50, 50, SERVO_TIP_2.read());
+    MotionGenerator profile3(50, 50, SERVO_TIP_3.read());
+    MotionGenerator profile4(50, 50, SERVO_TIP_4.read());
+
+    while (!profile1.getFinished() || !profile2.getFinished() ||
+           !profile3.getFinished() || !profile4.getFinished()) {
+        float pos1 = profile1.update(states[0]);
+        float pos2 = profile2.update(states[1]);
+        float pos3 = profile3.update(states[2]);
+        float pos4 = profile4.update(states[3]);
+        SERVO_TIP_1.write(pos1);
+        SERVO_TIP_2.write(pos2);
+        SERVO_TIP_3.write(pos3);
+        SERVO_TIP_4.write(pos4);
+        delay(25);
+    }
+
+    servos_state = servos_state_t::HOLDING;
 }
 
 void update_arm(int pose) {
